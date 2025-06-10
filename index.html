@@ -2,29 +2,65 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Điểm danh Đại hội Đảng Bộ Cục tần số làn thứ V,nhiệm kỳ 2025-2030</title>
+  <title>Điểm danh Đại hội Đảng Bộ Cục tần số lần thứ V, nhiệm kỳ 2025-2030</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 30px; }
-    label, select, button { margin-top:8px; display:block; }
+    #attendanceForm {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .form-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    label {
+      font-size: 20px;
+      min-width: 90px;
+      text-align: right;
+      margin-bottom: 0;
+      margin-top: 0;
+    }
+    select, button {
+      font-size: 20px;
+      height: 44px;
+      min-width: 180px;
+      padding: 2px 8px;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    button {
+      min-width: 120px;
+      cursor: pointer;
+    }
     #message { margin-top:20px; color:green; font-weight:bold; }
+    @media (max-width: 900px) {
+      #attendanceForm { flex-direction: column; align-items: flex-start; gap: 12px;}
+      .form-row { width: 100%; }
+      button { width: 100%; }
+    }
   </style>
 </head>
 <body>
   <div style="text-align:center; margin-top: 10px;">
-    <img src="{ filename='logo_CTS.jpg') }}" alt="Logo ARFM" style="max-height: 100px;">
+    <img src="logo_CTS.jpg" alt="Logo ARFM" style="max-height: 100px;">
   </div>
-  <h2>Điểm danh Đại hội Đảng Bộ Cục tần số làn thứ V,nhiệm kỳ 2025-2030</h2>
+  <h2>Điểm danh Đại hội Đảng Bộ Cục tần số lần thứ V, nhiệm kỳ 2025-2030</h2>
   <form id="attendanceForm">
-    <label>Chi bộ:</label>
-    <select name="chibo" id="chibo" required>
-      <option value="">-- Chọn chi bộ --</option>
-    </select>
-
-    <label>Đảng viên:</label>
-    <select name="dangvien" id="dangvien" required>
-      <option value="">-- Chọn đảng viên --</option>
-    </select>
-
+    <div class="form-row">
+      <label for="chibo">Chi bộ:</label>
+      <select name="chibo" id="chibo" required>
+        <option value="">-- Chọn chi bộ --</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label for="dangvien">Đảng viên:</label>
+      <select name="dangvien" id="dangvien" required>
+        <option value="">-- Chọn đảng viên --</option>
+      </select>
+    </div>
     <input type="hidden" name="latitude" id="latitude">
     <input type="hidden" name="longitude" id="longitude">
     <button type="submit">Điểm danh</button>
@@ -112,8 +148,9 @@
     // Gửi dữ liệu lên Google Apps Script
     document.getElementById('attendanceForm').onsubmit = function(e){
       e.preventDefault();
+      document.getElementById('message').textContent = "Please wait..."; // Hiện thông báo ngay khi gửi
       var dataForm = new FormData(this);
-      fetch('https://script.google.com/macros/s/AKfycbxBFe-RUyWqLSDiw7shoBsPQXwkytkZ1iSUulOdYUWx6SHeiMKe-WuJMDiA01xxLAzwTA/exec', { // Thay bằng link Web App Google Script của bạn!
+      fetch('https://script.google.com/macros/s/AKfycbxBFe-RUyWqLSDiw7shoBsPQXwkytkZ1iSUulOdYUWx6SHeiMKe-WuJMDiA01xxLAzwTA/exec', {
         method: 'POST',
         body: dataForm
       })
