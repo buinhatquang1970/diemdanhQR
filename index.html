@@ -2,31 +2,27 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Điểm danh Đại hội Đảng</title>
+  <title>Điểm danh Đại hội Đảng Bộ Cục tần số làn thứ V,nhiệm kỳ 2025-2030</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 30px; }
-    label, select { margin-top:8px; display:block; }
-    button { margin-top:15px; }
+    label, select, button { margin-top:8px; display:block; }
     #message { margin-top:20px; color:green; font-weight:bold; }
   </style>
 </head>
 <body>
-  <h2>Điểm danh Đại hội Đảng</h2>
+  <div style="text-align:center; margin-top: 10px;">
+    <img src="{ filename='logo_CTS.jpg') }}" alt="Logo ARFM" style="max-height: 100px;">
+  </div>
+  <h2>Điểm danh Đại hội Đảng Bộ Cục tần số làn thứ V,nhiệm kỳ 2025-2030</h2>
   <form id="attendanceForm">
     <label>Chi bộ:</label>
-    <select name="chibo" required>
+    <select name="chibo" id="chibo" required>
       <option value="">-- Chọn chi bộ --</option>
-      <option value="Chi bộ 1">Chi bộ 1</option>
-      <option value="Chi bộ 2">Chi bộ 2</option>
-      <!-- Thêm các chi bộ tại đây, sẽ cập nhật sau -->
     </select>
 
     <label>Đảng viên:</label>
-    <select name="dangvien" required>
+    <select name="dangvien" id="dangvien" required>
       <option value="">-- Chọn đảng viên --</option>
-      <option value="Nguyễn Văn A">Nguyễn Văn A</option>
-      <option value="Trần Thị B">Trần Thị B</option>
-      <!-- Thêm các đảng viên tại đây, sẽ cập nhật sau -->
     </select>
 
     <input type="hidden" name="latitude" id="latitude">
@@ -36,6 +32,71 @@
   <div id="message"></div>
 
   <script>
+    // Danh sách chi bộ và đảng viên (đã tổng hợp từ dữ liệu bạn gửi)
+    const data = {
+      "Chi bộ Văn phòng": [
+        "ĐẶNG THỊ THIÊN HẰNG","NGUYỄN QUỐC KHÁNH","TRẦN THỊ THANH THUỶ","NGUYỄN XUÂN PHONG","TỪ THỊ THU TRANG","TRẦN VĂN HIỀN"
+      ],
+      "Chi bộ ADCP": [
+        "NGUYỄN THỊ QUỲNH MAI","NGUYỄN THỊ MINH HƯỜNG","PHẠM HOÀNG LÊ","VŨ THANH HÒA"
+      ],
+      "Chi bộ CSQH-HTQT": [
+        "LÊ THÁI HÒA","NGUYỄN TIẾN HẢI","NGUYỄN HUY CƯƠNG","VŨ THU HIỀN","NGUYỄN HỒNG TUẤN","NGUYỄN THANH THỦY","NGÔ THANH HƯƠNG","NGUYỄN THỊ THU HUYỀN","LƯƠNG XUÂN TRƯỜNG","HỒ QUANG SƠN","LƯU THỊ VIỆT NGA","NGUYỄN DUY HIẾU","HOÀNG LÊ TRUNG","BÙI HÀ LONG","Văn Thị Hoàng Ngân"
+      ],
+      "Chi bộ TCCB": [
+        "LÊ VĂN TUẤN","NGUYỄN TRUNG THÀNH","MAI THANH THỦY","TRỊNH KHẮC CƯỜNG","HÀ THỊ VIỆT ANH","NGUYỄN VŨ TRÀ MY","TRẦN THỊ THANH THỦY","HÀ HOÀNG QUYÊN"
+      ],
+      "Chi bộ KHTC": [
+        "NGUYỄN PHƯƠNG ANH","NGUYỄN TUẤN ANH","ĐOÀN TUYẾT LAN","NGUYỄN HẢI BÌNH","ĐỖ HƯNG HÀ","TÔ VIỆT DŨNG","NGUYỄN BÁ TRUNG","LƯU THỊ THU TRANG","LƯƠNG THÚY OANH","ĐẶNG THỊ THANH TÂM","TRẦN THỊ NGỌC LAN"
+      ],
+      "Chi bộ TTKT": [
+        "NGUYỄN PHƯƠNG ĐÔNG","NGUYỄN VĂN KHANH","TRẦN XUÂN THIỆN","BÙI NHẬT QUANG","HÀ THỊ KIM THOA","NGUYỄN HỒNG HẢI","NGUYỄN KHẮC HUỲNH","CHU QUANG THÀNH","LỮ VĂN THẮNG","DƯƠNG HOÀNG GIANG","NGUYỄN THỊ THU HUYỀN","NGUYỄN ĐÌNH TUYỂN","NGUYỄN ĐÌNH TUẤN","LÊ HỒNG LINH","NGUYỄN TIỀN PHONG","Bùi Thị Minh Hà","Nguyễn Ngọc Nam","Hồ Khánh Toàn","Phan Trung Kiên"
+      ],
+      "Chi bộ Thanh tra -KSTS": [
+        "TRẦN MẠNH TUẤN","PHÙNG NGUYÊN PHƯƠNG","NGUYỄN TRỌNG QUANG","VŨ QUỐC KHÁNH","VÕ GIANG NAM","TRỊNH THỊ HỒNG LIÊN","ĐẶNG TIẾN NGUYÊN","Hồ Viết Thắng","LÊ VĂN TUYÊN","TRƯƠNG MINH TUẤN","LÊ BÌNH THỊ THÙY DƯƠNG","VŨ SƠN TÙNG","DƯƠNG ĐỨC TIẾN"
+      ],
+      "Chi bộ TT1": [
+        "AN XUÂN HẢI","ĐẶNG THỊ PHONG THUỶ","NGUYỄN XUÂN MINH","TRỊNH SƠN TÙNG","NGUYỄN MẠNH HẢI","HOÀNG LONG","NGUYỄN ANH SƠN","ĐOÀN MINH TRANG","HOÀNG VIỆT","NGUYỄN NGỌC ANH","NGUYỄN ĐỨC HUẤN","TÔ THỊ HƯỜNG","NGUYỄN VIỆT HÙNG","NGÔ NHẤT SƠN","ĐẬU VIẾT CƯỜNG","VŨ HÀM LONG","NGUYỄN TRƯỜNG MINH","TRẦN HẢI NINH","Nguyễn Quang Đạo","Vũ Ngọc Hưng"
+      ],
+      "Chi bộ TT2": [
+        "NGUYỄN THIỆN QUÝ","NGUYỄN CẢNH THẾ","LÂM ĐẠO TÂM","TRẦN XUÂN THẮNG","HỒ LÊ TÙNG","VŨ THỊ THANH THÙY","LÊ ĐỨC HẠNH","VÕ HOÀI PHONG","PHẠM QUỐC HƯNG"
+      ],
+      "Chi bộ TT3": [
+        "NGUYỄN HUY THẮNG","NGUYỄN VĂN HẢI","NGUYỄN NHO TỬU","ĐINH TẤN ĐỨC","NGUYỄN THANH HÀ","DƯƠNG TIẾN DŨNG","LÊ QUANG TRƯỜNG","NGUYỄN THỊ HỒNG THỦY","TẠ THỊ HÀ CHUNG","NGUYỄN ĐỨC KHOA","LÊ VĂN NGỌC","NGUYỄN THẾ HIỂN","CHU MẠNH CƯỜNG","NGUYỄN MẠNH TUẤN","HOÀNG ANH TÚ"
+      ],
+      "Chi bộ TT4": [
+        "HUỲNH PHƯƠNG CHÂU","LÊ BÌNH HOÀ","TRẦN CÔNG KHẢ","PHAN HOÀNG LÃM","NGUYỄN HUỲNH PHONG SƠN","PHAN THANH THẢO","NGUYỄN VĂN NGỌC VỮNG","LÊ PHÚ SỸ TIÊN","NGÔ QUỐC DỄ","ĐỖ THỊ HUYỀN"
+      ],
+      "Chi bộ TT5": [
+        "BÙI ĐỨC TOẢN","NGUYỄN THỊ HẰNG","VŨ TRÍ HẢI","NGUYỄN THỊ THANH NGA","ĐÀO VĂN ĐỨC","TRẦN ĐÌNH TUÂN","ĐOÀN LÊ VĂN","NGUYỄN HỒNG NHẬT","VŨ ĐÌNH TÚ","NGUYỄN TUẤN SƠN","NGUYỄN THỊ THANH VÂN"
+      ],
+      "Chi bộ TT6": [
+        "ĐỖ ĐÌNH ROANH","HỒ VIỆT NAM","NGUYỄN ANH TUẤN","PHAN VĂN  HẢI","LÊ SONG HÀO","TRẦN QUỐC DŨNG","LẠI QUỐC THUẬT","NGUYỄN THỊ THÚY","NGUYỄN VĂN KHÁNH","ĐINH THỊ TUYẾT MINH","NGUYỄN THỊ DƯƠNG LIỄU","TRẦN QUỐC BẢO","ĐẶNG KHẮC VĨNH","THÁI TRỌNG HIỀN","NGUYỄN XUÂN PHÚC","NGUYỄN TUẤN ANH","NGUYỄN ĐÌNH CHƯƠNG"
+      ],
+      "Chi bộ TT7": [
+        "LÊ HOÀNG NGUYÊN","NGUYỄN MINH ĐỒNG","ĐẶNG HOÀI NAM","NGUYỄN THỊ LỆ TÚ","NGUYỄN THANH SƠN","LÊ THANH HẢI","TRẦN THANH HẢI","TRƯƠNG QUỐC BẢO","NGUYỄN TUẤN NGỌC","NGUYỄN VĂN HIỆU","NGUYỄN ĐÌNH TUẤN","PHẠM QUANG HƯNG","PHAN THẾ TUỆ","ĐỖ THỊ PHƯƠNG ANH"
+      ],
+      "Chi bộ TT8": [
+        "PHAN THANH QUANG","NGUYỄN HẢI ANH","NGÔ MINH TRÍ","TRẦN XUÂN SƠN","HOÀNG ĐỨC CƯỜNG","ĐỖ QUANG HƯNG","MAI THỊ THU HIỀN","CAO THÀNH HIẾU","VŨ LÊ HẢI"
+      ]
+    };
+
+    // Sinh danh sách chi bộ
+    const chiboEl = document.getElementById('chibo');
+    Object.keys(data).forEach(chibo => {
+      chiboEl.innerHTML += `<option value="${chibo}">${chibo}</option>`;
+    });
+
+    // Khi đổi chi bộ, đổi danh sách đảng viên
+    chiboEl.addEventListener('change', function() {
+      const dvEl = document.getElementById('dangvien');
+      dvEl.innerHTML = `<option value="">-- Chọn đảng viên --</option>`;
+      const dangviens = data[this.value] || [];
+      dangviens.forEach(dv => {
+        dvEl.innerHTML += `<option value="${dv}">${dv}</option>`;
+      });
+    });
+
     // Lấy GPS tự động
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
@@ -51,10 +112,10 @@
     // Gửi dữ liệu lên Google Apps Script
     document.getElementById('attendanceForm').onsubmit = function(e){
       e.preventDefault();
-      var data = new FormData(this);
-      fetch('LINK_WEB_APP_GOOGLE_SCRIPT', { // Thay bằng link Apps Script của bạn
+      var dataForm = new FormData(this);
+      fetch('https://script.google.com/macros/s/AKfycbxBFe-RUyWqLSDiw7shoBsPQXwkytkZ1iSUulOdYUWx6SHeiMKe-WuJMDiA01xxLAzwTA/exec', { // Thay bằng link Web App Google Script của bạn!
         method: 'POST',
-        body: data
+        body: dataForm
       })
       .then(response => response.text())
       .then(msg => {
