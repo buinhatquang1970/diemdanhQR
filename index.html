@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Điểm danh Đại hội Đảng</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    label, select { margin-top:8px; display:block; }
+    button { margin-top:15px; }
+    #message { margin-top:20px; color:green; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <h2>Điểm danh Đại hội Đảng</h2>
+  <form id="attendanceForm">
+    <label>Chi bộ:</label>
+    <select name="chibo" required>
+      <option value="">-- Chọn chi bộ --</option>
+      <option value="Chi bộ 1">Chi bộ 1</option>
+      <option value="Chi bộ 2">Chi bộ 2</option>
+      <!-- Thêm các chi bộ tại đây, sẽ cập nhật sau -->
+    </select>
+
+    <label>Đảng viên:</label>
+    <select name="dangvien" required>
+      <option value="">-- Chọn đảng viên --</option>
+      <option value="Nguyễn Văn A">Nguyễn Văn A</option>
+      <option value="Trần Thị B">Trần Thị B</option>
+      <!-- Thêm các đảng viên tại đây, sẽ cập nhật sau -->
+    </select>
+
+    <input type="hidden" name="latitude" id="latitude">
+    <input type="hidden" name="longitude" id="longitude">
+    <button type="submit">Điểm danh</button>
+  </form>
+  <div id="message"></div>
+
+  <script>
+    // Lấy GPS tự động
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        document.getElementById('latitude').value = position.coords.latitude;
+        document.getElementById('longitude').value = position.coords.longitude;
+      }, function() {
+        document.getElementById('message').textContent = "Bạn cần bật GPS để điểm danh!";
+      });
+    } else {
+      document.getElementById('message').textContent = "Trình duyệt không hỗ trợ GPS!";
+    }
+
+    // Gửi dữ liệu lên Google Apps Script
+    document.getElementById('attendanceForm').onsubmit = function(e){
+      e.preventDefault();
+      var data = new FormData(this);
+      fetch('LINK_WEB_APP_GOOGLE_SCRIPT', { // Thay bằng link Apps Script của bạn
+        method: 'POST',
+        body: data
+      })
+      .then(response => response.text())
+      .then(msg => {
+        document.getElementById('message').textContent = msg;
+        document.getElementById('attendanceForm').reset();
+      })
+      .catch(() => {
+        document.getElementById('message').textContent = "Gửi dữ liệu thất bại!";
+      });
+    }
+  </script>
+</body>
+</html>
