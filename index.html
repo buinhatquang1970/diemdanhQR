@@ -63,7 +63,7 @@
     </div>
     <input type="hidden" name="latitude" id="latitude">
     <input type="hidden" name="longitude" id="longitude">
-    <button type="submit">Điểm danh</button>
+    <button type="submit" id="submitBtn" disabled>Điểm danh</button>
   </form>
   <div id="message"></div>
 
@@ -133,11 +133,24 @@
       });
     });
 
-    // Lấy GPS tự động
+    // Disable nút submit cho đến khi GPS sẵn sàng
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+
+    // Lấy GPS tự động, chỉ enable nút submit khi có tọa độ
+    function enableSubmitIfReady() {
+      const lat = document.getElementById('latitude').value;
+      const lon = document.getElementById('longitude').value;
+      if (lat && lon) {
+        submitBtn.disabled = false;
+      }
+    }
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
         document.getElementById('latitude').value = position.coords.latitude;
         document.getElementById('longitude').value = position.coords.longitude;
+        enableSubmitIfReady();
       }, function() {
         document.getElementById('message').textContent = "Bạn cần bật GPS để điểm danh!";
       });
@@ -148,6 +161,12 @@
     // Gửi dữ liệu lên Google Apps Script
     document.getElementById('attendanceForm').onsubmit = function(e){
       e.preventDefault();
+      const lat = document.getElementById('latitude').value;
+      const lon = document.getElementById('longitude').value;
+      if (!lat || !lon) {
+        document.getElementById('message').textContent = "Không thể lấy vị trí GPS! Vui lòng thử lại sau.";
+        return;
+      }
       document.getElementById('message').textContent = "Please wait..."; // Hiện thông báo ngay khi gửi
       var dataForm = new FormData(this);
       fetch('https://script.google.com/macros/s/AKfycbxBFe-RUyWqLSDiw7shoBsPQXwkytkZ1iSUulOdYUWx6SHeiMKe-WuJMDiA01xxLAzwTA/exec', {
@@ -158,6 +177,16 @@
       .then(msg => {
         document.getElementById('message').textContent = msg;
         document.getElementById('attendanceForm').reset();
+        // Sau khi reset cần disable lại nút submit cho đến khi lấy lại GPS
+        submitBtn.disabled = true;
+        // Tự động lấy lại GPS sau khi điểm danh thành công
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            document.getElementById('latitude').value = position.coords.latitude;
+            document.getElementById('longitude').value = position.coords.longitude;
+            enableSubmitIfReady();
+          });
+        }
       })
       .catch(() => {
         document.getElementById('message').textContent = "Gửi dữ liệu thất bại!";
