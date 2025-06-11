@@ -17,14 +17,14 @@
       gap: 8px;
     }
     label {
-      font-size: 20px;
+      font-size: 18px;
       min-width: 90px;
       text-align: right;
       margin-bottom: 0;
       margin-top: 0;
     }
     select, button {
-      font-size: 20px;
+      font-size: 18px;
       height: 44px;
       min-width: 180px;
       padding: 2px 8px;
@@ -65,6 +65,27 @@
     <input type="hidden" name="longitude" id="longitude">
     <button type="submit" id="submitBtn" disabled>Điểm danh</button>
   </form>
+   <p style="text-align:left; font-style: bold; margin-top: -10px; margin-bottom: 12px; font-size: 16px;">
+       
+    </p>
+  <p style="text-align:left; font-style: bold; margin-top: -10px; margin-bottom: 12px; font-size: 16px;">
+            
+ </p>
+  <p style="text-align:left; font-style: bold; margin-top: -10px; margin-bottom: 12px; font-size: 16px;">
+   Lưu ý:  .
+ </p>
+  <p style="text-align:left; font-style: bold; margin-top: -10px; margin-bottom: 12px; font-size: 16px;">
+   1. Phải bật GPS lên và cho phép truy cập vị trí (nếu được hỏi) mới điểm danh được
+ </p>
+ <p style="text-align:left; font-style: bold; margin-top: -10px; margin-bottom: 12px; font-size: 16px;">
+   2. Hướng dẫn người dùng bật định vị cho trình duyệt
+</p>
+<p style="text-align:left; font-style: bold; margin-top: -10px; margin-bottom: 12px; font-size: 16px;">
+  Vào Cài đặt > Quyền riêng tư > Dịch vụ định vị > Bật
+ </p>
+ <p style="text-align:left; font-style: bold; margin-top: -10px; margin-bottom: 12px; font-size: 16px;">
+  Vào Cài đặt > Safari > Vị trí > Cho phép truy cập (đối với Iphone)
+ </p>
   <div id="message"></div>
 
   <script>
@@ -135,7 +156,7 @@
 
     // Disable nút submit cho đến khi GPS sẵn sàng
     const submitBtn = document.getElementById('submitBtn');
-    submitBtn.disabled = true;
+    submitBtn.disabled = false;
 
     // Lấy GPS tự động, chỉ enable nút submit khi có tọa độ
     function enableSubmitIfReady() {
@@ -164,7 +185,7 @@
       const lat = document.getElementById('latitude').value;
       const lon = document.getElementById('longitude').value;
       if (!lat || !lon) {
-        document.getElementById('message').textContent = "Không thể lấy vị trí GPS! Vui lòng thử lại sau.";
+        document.getElementById('message').textContent = "Không thể lấy vị trí GPS! Vui lòng nhấn F5 để thử lại.";
         return;
       }
       document.getElementById('message').textContent = "Please wait..."; // Hiện thông báo ngay khi gửi
@@ -178,15 +199,7 @@
         document.getElementById('message').textContent = msg;
         document.getElementById('attendanceForm').reset();
         // Sau khi reset cần disable lại nút submit cho đến khi lấy lại GPS
-        submitBtn.disabled = true;
-        // Tự động lấy lại GPS sau khi điểm danh thành công
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) {
-            document.getElementById('latitude').value = position.coords.latitude;
-            document.getElementById('longitude').value = position.coords.longitude;
-            enableSubmitIfReady();
-          });
-        }
+       
       })
       .catch(() => {
         document.getElementById('message').textContent = "Gửi dữ liệu thất bại!";
